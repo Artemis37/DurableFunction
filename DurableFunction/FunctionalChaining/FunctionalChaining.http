@@ -1,0 +1,30 @@
+# PATTERN 1: FUNCTION CHAINING
+# Start the app (F5). Visual Studio starts Azurite for you. Then click "Send request" above each call.
+# Watch the console: Enrich fails ~30% of the time, and you'll see the retry policy kick in.
+
+@baseUrl = http://localhost:7268/api
+
+### Happy path: Validate → Enrich → Score → Persist
+# @name submitLoan
+POST {{baseUrl}}/loans
+Content-Type: application/json
+
+{
+  "id": "loan-1001",
+  "applicantId": "alice",
+  "amount": 25000
+}
+
+### Check the result (reuses StatusQueryGetUri from the response above)
+# If your editor doesn't support request variables, paste the StatusQueryGetUri here instead.
+GET {{submitLoan.response.body.$.StatusQueryGetUri}}
+
+### Validation failure: not retried, so it goes straight to compensation → output "ManualReview"
+POST {{baseUrl}}/loans
+Content-Type: application/json
+
+{
+  "id": "loan-1002",
+  "applicantId": "bob",
+  "amount": -5
+}

@@ -1,0 +1,11 @@
+{
+    "version": "2.0",
+    "telemetryMode": "OpenTelemetry",
+    "extensions": {
+        "durableTask": {
+            "hubName": "DurableLearningHub",
+            "maxConcurrentActivityFunctions": 10,
+            "maxConcurrentOrchestratorFunctions": 10
+        }
+    }
+}

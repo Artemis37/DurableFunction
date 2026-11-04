@@ -1,0 +1,20 @@
+# ETERNAL ORCHESTRATIONS: ContinueAsNew
+# Demo interval: 15 seconds (production: 15 minutes).
+
+@baseUrl = http://localhost:7268/api
+@hostUrl = http://localhost:7268
+
+### 1. Start the forever-loop for partner "acme"
+POST {{baseUrl}}/eternal/partners/acme/start?intervalSeconds=15
+
+### 2. Call start again → still ONE instance (singleton)
+POST {{baseUrl}}/eternal/partners/acme/start?intervalSeconds=15
+
+### 3. Status: same instance ID; customStatus.Generation goes up every 15 seconds
+GET {{hostUrl}}/runtime/webhooks/durabletask/instances/partner-sync-acme
+
+### 4. History stays tiny: only the current generation's events, however long it has run
+GET {{hostUrl}}/runtime/webhooks/durabletask/instances/partner-sync-acme?showHistory=true
+
+### 5. Stop it
+POST {{baseUrl}}/eternal/partners/acme/stop

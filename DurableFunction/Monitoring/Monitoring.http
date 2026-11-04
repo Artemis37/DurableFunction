@@ -1,0 +1,26 @@
+# PATTERN 4: MONITOR
+# Demo timings: check every 10 seconds and give up after 2 minutes (production: 15 min / 24 h).
+# Try it twice: once uploading the file (step 2), once letting it time out (skip step 2).
+
+@baseUrl = http://localhost:7268/api
+@hostUrl = http://localhost:7268
+
+### 1. Start watching for acme's file
+POST {{baseUrl}}/monitor/partners
+Content-Type: application/json
+
+{
+  "partnerId": "acme",
+  "fileName": "orders-2026-11-03.csv",
+  "pollIntervalSeconds": 10,
+  "timeoutMinutes": 2
+}
+
+### 2. Simulate acme uploading the file. The next check finds it and the monitor completes with output true.
+PUT {{baseUrl}}/monitor/partners/acme/files/orders-2026-11-03.csv
+
+### 3. Status: customStatus shows the number of checks and the deadline
+GET {{hostUrl}}/runtime/webhooks/durabletask/instances/monitor-acme
+
+### 4. Stop watching early (terminate)
+DELETE {{baseUrl}}/monitor/partners/acme
