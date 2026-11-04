@@ -33,6 +33,8 @@ to re-run one.
 
 ## Testing the deployed app
 
+To deploy the app first, follow [DEPLOY.md](DEPLOY.md).
+
 The `.http` files get their URL and keys from `DurableFunction/http-client.env.json`. The local
 values under `$shared` apply by default, and choosing the `azure` environment overrides them.
 Visual Studio reads these files on your PC, so they aren't Azure app settings and nothing in them
