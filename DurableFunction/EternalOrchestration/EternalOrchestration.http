@@ -1,20 +1,22 @@
 # ETERNAL ORCHESTRATIONS: ContinueAsNew
 # Demo interval: 15 seconds (production: 15 minutes).
 
-@baseUrl = http://localhost:7268/api
-@hostUrl = http://localhost:7268
+# URL and keys come from http-client.env.json. Local values are the default; to test the deployed app, choose azure at the top right of this editor.
 
 ### 1. Start the forever-loop for partner "acme"
 POST {{baseUrl}}/eternal/partners/acme/start?intervalSeconds=15
+x-functions-key: {{functionKey}}
 
 ### 2. Call start again → still ONE instance (singleton)
 POST {{baseUrl}}/eternal/partners/acme/start?intervalSeconds=15
+x-functions-key: {{functionKey}}
 
 ### 3. Status: same instance ID; customStatus.Generation goes up every 15 seconds
-GET {{hostUrl}}/runtime/webhooks/durabletask/instances/partner-sync-acme
+GET {{hostUrl}}/runtime/webhooks/durabletask/instances/partner-sync-acme?code={{systemKey}}
 
 ### 4. History stays tiny: only the current generation's events, however long it has run
-GET {{hostUrl}}/runtime/webhooks/durabletask/instances/partner-sync-acme?showHistory=true
+GET {{hostUrl}}/runtime/webhooks/durabletask/instances/partner-sync-acme?showHistory=true&code={{systemKey}}
 
 ### 5. Stop it
 POST {{baseUrl}}/eternal/partners/acme/stop
+x-functions-key: {{functionKey}}

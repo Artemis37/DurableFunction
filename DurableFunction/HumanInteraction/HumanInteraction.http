@@ -2,11 +2,11 @@
 # Instance IDs come from the expense ID, and Azurite keeps history between runs,
 # so change the ids to re-run a scenario.
 
-@baseUrl = http://localhost:7268/api
-@hostUrl = http://localhost:7268
+# URL and keys come from http-client.env.json. Local values are the default; to test the deployed app, choose azure at the top right of this editor.
 
 ### 1. At or under the limit (5,000 from local.settings.json) → "AutoApproved", no waiting
 POST {{baseUrl}}/expenses
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -19,6 +19,7 @@ Content-Type: application/json
 
 ### 2. Over the limit, with a 2-minute approval window for the demo (production: 72 hours)
 POST {{baseUrl}}/expenses?timeoutSeconds=120
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -31,6 +32,7 @@ Content-Type: application/json
 
 ### 3. The wrong person tries to approve → 403. The orchestration never sees it.
 POST {{baseUrl}}/expenses/exp-102/decision
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -41,6 +43,7 @@ Content-Type: application/json
 
 ### 4. The manager approves inside the window → "Approved". It completes now because the timer was cancelled.
 POST {{baseUrl}}/expenses/exp-102/decision
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -50,10 +53,11 @@ Content-Type: application/json
 }
 
 ### 5. Status / output of exp-102
-GET {{hostUrl}}/runtime/webhooks/durabletask/instances/expense-exp-102
+GET {{hostUrl}}/runtime/webhooks/durabletask/instances/expense-exp-102?code={{systemKey}}
 
 ### 6. Timeout path: 30-second window and nobody answers → "Escalated"
 POST {{baseUrl}}/expenses?timeoutSeconds=30
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -65,4 +69,4 @@ Content-Type: application/json
 }
 
 ### 7. Check exp-103 after 30 seconds
-GET {{hostUrl}}/runtime/webhooks/durabletask/instances/expense-exp-103
+GET {{hostUrl}}/runtime/webhooks/durabletask/instances/expense-exp-103?code={{systemKey}}

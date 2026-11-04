@@ -31,6 +31,23 @@ Azurite keeps history between runs. Scenarios with fixed instance IDs (report, e
 monitor, sync) return the existing instance if you send the same ID again, so change the ID
 to re-run one.
 
+## Testing the deployed app
+
+The `.http` files get their URL and keys from `DurableFunction/http-client.env.json`. The local
+values under `$shared` apply by default, and choosing the `azure` environment overrides them.
+Visual Studio reads these files on your PC, so they aren't Azure app settings and nothing in them
+is published.
+
+1. In `http-client.env.json`, replace `YOUR-APP` under `azure` with your function app's host name.
+2. Create `DurableFunction/http-client.env.json.user` next to it. It's gitignored, so your keys stay
+   on your machine, and its values override the ones in `http-client.env.json`:
+   ```json
+   { "azure": { "functionKey": "<default host key>", "systemKey": "<durabletask_extension system key>" } }
+   ```
+   Both keys are on the function app's **Functions** > **App keys** page in the Azure portal.
+3. Choose **azure** in the environment dropdown at the top right of the `.http` editor and send a
+   request. If the dropdown doesn't show the environments, close and reopen the solution.
+
 ## Gotchas found by running it
 
 - **The 202 body is PascalCase in the isolated worker** (`Id`, `StatusQueryGetUri`, …), while the

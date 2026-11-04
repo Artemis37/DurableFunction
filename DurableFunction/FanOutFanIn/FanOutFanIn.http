@@ -2,11 +2,12 @@
 # Every 13th branch file is "corrupt". Expect Failed = 3 for 50 files (branches 13, 26 and 39),
 # each after 3 retry attempts, while the run as a whole still completes.
 
-@baseUrl = http://localhost:7268/api
+# URL and keys come from http-client.env.json. Local values are the default; to test the deployed app, choose azure at the top right of this editor.
 
 ### Flat fan-out: 50 activities in parallel
 # @name flat
 POST {{baseUrl}}/rollup
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -20,6 +21,7 @@ GET {{flat.response.body.$.StatusQueryGetUri}}
 ### Batched fan-out: 1,000 files as 4 sub-orchestrations of 250
 # @name batched
 POST {{baseUrl}}/rollup
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {

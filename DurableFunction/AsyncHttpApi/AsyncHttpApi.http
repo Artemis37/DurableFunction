@@ -1,11 +1,11 @@
 # PATTERN 3: ASYNC HTTP APIs
 # The report takes ~24 seconds (3 steps × 8s). Send step 1, then step 3 a few times.
 
-@baseUrl = http://localhost:7268/api
-@hostUrl = http://localhost:7268
+# URL and keys come from http-client.env.json. Local values are the default; to test the deployed app, choose azure at the top right of this editor.
 
 ### 1. Start the report → 202 Accepted + Location header + management URLs
 POST {{baseUrl}}/reports
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -17,6 +17,7 @@ Content-Type: application/json
 
 ### 2. Send the exact same request again → same instance ID, no second report (idempotent start)
 POST {{baseUrl}}/reports
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -28,6 +29,7 @@ Content-Type: application/json
 
 ### 3. Your own status endpoint: 202 + Retry-After while running, 200 + DownloadUrl when done
 GET {{baseUrl}}/reports/q3-emea
+x-functions-key: {{functionKey}}
 
 ### 4. The built-in status endpoint (what StatusQueryGetUri points to), for comparison
-GET {{hostUrl}}/runtime/webhooks/durabletask/instances/report-q3-emea
+GET {{hostUrl}}/runtime/webhooks/durabletask/instances/report-q3-emea?code={{systemKey}}

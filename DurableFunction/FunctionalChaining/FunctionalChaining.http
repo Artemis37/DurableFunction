@@ -2,11 +2,12 @@
 # Start the app (F5). Visual Studio starts Azurite for you. Then click "Send request" above each call.
 # Watch the console: Enrich fails ~30% of the time, and you'll see the retry policy kick in.
 
-@baseUrl = http://localhost:7268/api
+# URL and keys come from http-client.env.json. Local values are the default; to test the deployed app, choose azure at the top right of this editor.
 
 ### Happy path: Validate → Enrich → Score → Persist
 # @name submitLoan
 POST {{baseUrl}}/loans
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
@@ -21,6 +22,7 @@ GET {{submitLoan.response.body.$.StatusQueryGetUri}}
 
 ### Validation failure: not retried, so it goes straight to compensation → output "ManualReview"
 POST {{baseUrl}}/loans
+x-functions-key: {{functionKey}}
 Content-Type: application/json
 
 {
