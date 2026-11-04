@@ -36,12 +36,12 @@ public class PartnerFileApi(FakeSftpServer sftp)
     // PUT /api/monitor/partners/{partnerId}/files/{fileName}: SIMULATES the partner
     // uploading the file. The monitor doesn't get a message; it finds the file on its next check.
     [Function("SimulatePartnerUpload")]
-    public HttpResponseData SimulatePartnerUpload(
+    public async Task<HttpResponseData> SimulatePartnerUpload(
         [HttpTrigger(AuthorizationLevel.Function, "put", Route = "monitor/partners/{partnerId}/files/{fileName}")] HttpRequestData req,
         string partnerId,
         string fileName)
     {
-        sftp.Upload(partnerId, fileName);
+        await sftp.UploadAsync(partnerId, fileName);
         return req.CreateResponse(HttpStatusCode.Created);
     }
 
